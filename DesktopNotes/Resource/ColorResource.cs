@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopNotes.ResourceDictionary
+namespace DesktopNotes.Resource
 {
     //public class ColorResource
     //{
@@ -22,6 +22,10 @@ namespace DesktopNotes.ResourceDictionary
         Yellow_Hover = 0xEED767,
         // #FFF2AB
         Yellow_Title = 0xFFF2AB,
+        // #EEE2A0
+        Yellow_Button_Hover = 0xEEE2A0,
+        // #DCD194
+        Yellow_Button_Click = 0xDCD194,
 
         // 绿色
         // #E4F9E0

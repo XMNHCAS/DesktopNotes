@@ -1,16 +1,125 @@
-﻿<Window x:Class="DesktopNotes.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DesktopNotes"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Topmost="True"
-        AllowsTransparency="True"
-        WindowStyle="None"
-        Background="Transparent">
-    <Grid>
-        
-    </Grid>
+﻿<Window
+    x:Class="DesktopNotes.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DesktopNotes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="400"
+    Height="300"
+    MaxWidth="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"
+    MaxHeight="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"
+    AllowsTransparency="True"
+    Background="Transparent"
+    Loaded="Window_Loaded"
+    MouseLeftButtonDown="Window_MouseLeftButtonDown"
+    ResizeMode="NoResize"
+    Topmost="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <Border
+        Margin="10"
+        Background="#FFF7D1"
+        Opacity="1">
+        <Border.Effect>
+            <DropShadowEffect
+                BlurRadius="10"
+                Opacity="0.4"
+                ShadowDepth="0"
+                Color="#FFAAAAAA" />
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30px" />
+                <RowDefinition />
+                <RowDefinition Height="30px" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Background="#FFF2AB">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30px" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30px" />
+                    <ColumnDefinition Width="30px" />
+                </Grid.ColumnDefinitions>
+
+
+                <Button
+                    x:Name="btn_NewForm"
+                    Grid.Column="0"
+                    Content="&#59646;"
+                    Style="{StaticResource IconFontButton}"
+                    Click="btn_NewForm_Click"/>
+                <Button
+                    Grid.Column="2"
+                    Content="&#59389;"
+                    Style="{StaticResource IconFontButton}" />
+                <Button
+                    x:Name="btn_Close"
+                    Grid.Column="3"
+                    Content="&#59390;"
+                    Style="{StaticResource IconFontButton}"
+                    Click="btn_Close_Click"/>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="10">
+                <RichTextBox
+                    x:Name="rbx_Content"
+                    SpellCheck.IsEnabled="True"
+                    AcceptsTab="True"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontSize="15" />
+            </Grid>
+
+            <Border
+                Grid.Row="2"
+                BorderBrush="LightGray"
+                BorderThickness="0,1,0,0">
+                <WrapPanel>
+                    <WrapPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}"></Setter>
+                        </Style>
+                    </WrapPanel.Resources>
+                    <Button
+                        Grid.Column="0"
+                        Content="&#59383;"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="加粗"
+                        Command="EditingCommands.ToggleBold"/>
+                    <Button
+                        Grid.Column="2"
+                        Content="&#59387;"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="斜体"/>
+                    <Button
+                        Grid.Column="3"
+                        Content="&#59386;"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="下划线"/>
+                    <Button
+                        Grid.Column="0"
+                        Content="&#59385;"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="删除线"
+                        />
+                    <Button
+                        Grid.Column="2"
+                        Content="&#59381;"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="无序列表"/>
+                    <Button
+                        Grid.Column="3"
+                        Content="&#59358;"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="插入图片"
+                        />
+                </WrapPanel>
+            </Border>
+        </Grid>
+    </Border>
 </Window>
