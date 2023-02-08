@@ -5,11 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DesktopNotes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="clr-namespace:DesktopNotes.ViewModel"
     Title="MainWindow"
     Width="400"
     Height="300"
     MaxWidth="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"
     MaxHeight="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"
+    d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
     Loaded="Window_Loaded"
@@ -50,9 +52,9 @@
                 <Button
                     x:Name="btn_NewForm"
                     Grid.Column="0"
+                    Click="btn_NewForm_Click"
                     Content="&#59646;"
-                    Style="{StaticResource IconFontButton}"
-                    Click="btn_NewForm_Click"/>
+                    Style="{StaticResource IconFontButton}" />
                 <Button
                     Grid.Column="2"
                     Content="&#59389;"
@@ -60,64 +62,84 @@
                 <Button
                     x:Name="btn_Close"
                     Grid.Column="3"
+                    Click="btn_Close_Click"
                     Content="&#59390;"
-                    Style="{StaticResource IconFontButton}"
-                    Click="btn_Close_Click"/>
+                    Style="{StaticResource IconFontButton}" />
             </Grid>
 
             <Grid Grid.Row="1" Margin="10">
                 <RichTextBox
                     x:Name="rbx_Content"
-                    SpellCheck.IsEnabled="True"
+                    xml:lang="en-us"
                     AcceptsTab="True"
                     Background="Transparent"
                     BorderThickness="0"
-                    FontSize="15" />
+                    FontSize="15"
+                    SelectionChanged="rbx_Content_SelectionChanged"
+                    SpellCheck.IsEnabled="True" />
             </Grid>
 
             <Border
                 Grid.Row="2"
                 BorderBrush="LightGray"
                 BorderThickness="0,1,0,0">
+
                 <WrapPanel>
                     <WrapPanel.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}"></Setter>
+                        <Style
+                            x:Key="CommandButton"
+                            BasedOn="{StaticResource IconFontButton}"
+                            TargetType="{x:Type Button}">
+                            <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
+                        </Style>
+                        <Style
+                            x:Key="CommandToggleButton"
+                            BasedOn="{StaticResource IconFontToggleButton}"
+                            TargetType="{x:Type ToggleButton}">
+                            <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
                         </Style>
                     </WrapPanel.Resources>
-                    <Button
+                    <ToggleButton
                         Grid.Column="0"
+                        Command="EditingCommands.ToggleBold"
                         Content="&#59383;"
-                        Style="{StaticResource IconFontButton}"
-                        ToolTip="加粗"
-                        Command="EditingCommands.ToggleBold"/>
-                    <Button
+                        IsChecked="{Binding IsBold}"
+                        Style="{StaticResource CommandToggleButton}"
+                        ToolTip="加粗" />
+                    <ToggleButton
                         Grid.Column="2"
+                        Command="EditingCommands.ToggleItalic"
                         Content="&#59387;"
-                        Style="{StaticResource IconFontButton}"
-                        ToolTip="斜体"/>
-                    <Button
+                        IsChecked="{Binding IsItalic}"
+                        Style="{StaticResource CommandToggleButton}"
+                        ToolTip="斜体" />
+                    <ToggleButton
                         Grid.Column="3"
+                        Command="EditingCommands.ToggleUnderline"
                         Content="&#59386;"
-                        Style="{StaticResource IconFontButton}"
-                        ToolTip="下划线"/>
-                    <Button
+                        IsChecked="{Binding IsUnderLine}"
+                        Style="{StaticResource CommandToggleButton}"
+                        ToolTip="下划线" />
+                    <ToggleButton
+                        x:Name="btn_Strikethrough"
                         Grid.Column="0"
+                        Click="btn_Strikethrough_Click"
                         Content="&#59385;"
-                        Style="{StaticResource IconFontButton}"
-                        ToolTip="删除线"
-                        />
+                        IsChecked="{Binding IsStrikethrough}"
+                        Style="{StaticResource CommandToggleButton}"
+                        ToolTip="删除线" />
                     <Button
                         Grid.Column="2"
+                        Command="EditingCommands.ToggleBullets"
                         Content="&#59381;"
-                        Style="{StaticResource IconFontButton}"
-                        ToolTip="无序列表"/>
+                        Style="{StaticResource CommandButton}"
+                        ToolTip="无序列表" />
                     <Button
                         Grid.Column="3"
+                        Command="EditingCommands.ToggleBold"
                         Content="&#59358;"
-                        Style="{StaticResource IconFontButton}"
-                        ToolTip="插入图片"
-                        />
+                        Style="{StaticResource CommandButton}"
+                        ToolTip="插入图片" />
                 </WrapPanel>
             </Border>
         </Grid>

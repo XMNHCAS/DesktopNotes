@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using DesktopNotes.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -20,36 +24,14 @@ namespace DesktopNotes
             var c = Content as UIElement;
             var layer = AdornerLayer.GetAdornerLayer(c);
             layer.Add(new Utils.WindowResizeAdorner(c));
+
+            DataContext = new MainViewModel();
+
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
-        }
-
-        private void CloseWindow(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void WindowSizeChange(object sender, RoutedEventArgs e)
-        {
-            var btn = sender as Button;
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                btn.Content = "\ue62a";
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-                btn.Content = "\ue673";
-            }
-        }
-
-        private void MinSizeWindow(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
         }
 
         private void btn_Close_Click(object sender, RoutedEventArgs e)
@@ -61,6 +43,55 @@ namespace DesktopNotes
         {
             var form = new MainWindow();
             form.Show();
+        }
+
+        private void btn_Strikethrough_Click(object sender, RoutedEventArgs e)
+        {
+            Background = (System.Windows.Media.Brush)(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 0, 0)));
+
+            var temp = rbx_Content.Selection.GetPropertyValue(Inline.TextDecorationsProperty) as TextDecorationCollection;
+
+            if (temp == null)
+            {
+                return;
+            }
+
+            var textDecorations = temp.CloneCurrentValue();
+            var data = DataContext as MainViewModel;
+
+            if (data.IsStrikethrough)
+            {
+                textDecorations.Add(TextDecorations.Strikethrough[0]);
+            }
+            else
+            {
+                if (textDecorations.Count > 1)
+                {
+                    textDecorations = TextDecorations.Underline;
+                }
+                else
+                {
+                    textDecorations = null;
+                }
+            }
+
+            rbx_Content.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, textDecorations);
+        }
+
+        private void rbx_Content_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var data = DataContext as MainViewModel;
+
+            var fontWeight = rbx_Content.Selection.GetPropertyValue(TextElement.FontWeightProperty);
+            data.IsBold = (fontWeight != DependencyProperty.UnsetValue) && fontWeight.Equals(FontWeights.Bold);
+
+            var fontStyle = rbx_Content.Selection.GetPropertyValue(TextElement.FontStyleProperty);
+            data.IsItalic = (fontStyle != DependencyProperty.UnsetValue) && fontStyle.Equals(FontStyles.Italic);
+
+            var textDecorations = rbx_Content.Selection.GetPropertyValue(Inline.TextDecorationsProperty);
+            var arr = textDecorations as TextDecorationCollection;
+            data.IsUnderLine = arr.Any(m => m.Location == TextDecorationLocation.Underline);
+            data.IsStrikethrough = arr.Any(m => m.Location == TextDecorationLocation.Strikethrough);
         }
     }
 }
