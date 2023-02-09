@@ -3,12 +3,14 @@ using DesktopNotes.Resource.UserControllers;
 using DesktopNotes.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -60,8 +62,18 @@ namespace DesktopNotes
         private void btn_NewForm_Click(object sender, RoutedEventArgs e)
         {
             var form = new MainWindow();
-            //(form.DataContext as MainViewModel).ThemeOptions =
-            //    new System.Collections.ObjectModel.ObservableCollection<ThemeOption>((DataContext as MainViewModel).ThemeOptions.ToList());
+            var data = DataContext as MainViewModel;
+
+            (form.DataContext as MainViewModel).ThemeOptions[0].IsSelected = false;
+            for (int i = 0; i < data.ThemeOptions.Count; i++)
+            {
+                if (data.ThemeOptions[i].IsSelected)
+                {
+                    (form.DataContext as MainViewModel).ThemeOptions[i].IsSelected = true;
+                    break;
+                }
+            }
+
             form.Show();
         }
 
@@ -119,10 +131,6 @@ namespace DesktopNotes
             if (string.IsNullOrWhiteSpace(textRange.Text))
             {
                 placeholder.Visibility = Visibility.Visible;
-                //var run = new Run("记笔记...");
-                //var p = new Paragraph();
-                //p.Inlines.Add(run);
-                //rbx_Content.Document.Blocks.Add(p);
             }
             else
             {
@@ -242,6 +250,48 @@ namespace DesktopNotes
             void callback(object obj, EventArgs arg)
             {
                 (DataContext as MainViewModel).SettingVisibility = Visibility.Hidden;
+            }
+        }
+
+        private void btn_SaveNote_Click(object sender, RoutedEventArgs e)
+        {
+            //using (var stream = new MemoryStream())
+            //{
+            //    XamlWriter.Save(rbx_Content.Document, stream);
+            //    byte[] bytes = new byte[stream.Length];
+            //    stream.Position = 0;
+            //    stream.Read(bytes, 0, bytes.Length);
+
+            //    var data = DataContext as MainViewModel;
+            //    var dal = new Utils.DataBase.DAL.NotesDAL();
+
+            //    //var textRange = new TextRange(rbx_Content.Document.ContentStart, rbx_Content.Document.ContentEnd);
+            //    //string note = textRange.Text;
+
+            //    string note = Convert.ToBase64String(bytes);
+
+            //    if (string.IsNullOrWhiteSpace(data.NoteID))
+            //    {
+            //        data.NoteID = dal.CreateNote(note);
+            //    }
+            //    else
+            //    {
+            //        dal.UpdateNote(data.NoteID, note);
+            //    }
+            //}
+
+            var dal = new Utils.DataBase.DAL.NotesDAL();
+            var res = dal.RetrieveNoteContent("eaf51676-4984-48a3-b126-3ea346ce8b91");
+            AnalysisNoteFromDatabase(res.Content);
+        }
+
+        private void AnalysisNoteFromDatabase(string base64Str)
+        {
+            byte[] bytes = Convert.FromBase64String(base64Str);
+            using (var stream = new MemoryStream(bytes))
+            {
+                var doc = XamlReader.Load(stream) as FlowDocument;
+                rbx_Content.Document = doc;
             }
         }
     }

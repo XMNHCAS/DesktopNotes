@@ -36,6 +36,39 @@
         </Setter>
     </Style>
 
+    <Style x:Key="IconFontThemeButton" TargetType="{x:Type uc:ThemeButton}">
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" BorderThickness="0">
+                        <ContentPresenter>
+                            <ContentPresenter.Content>
+                                <Label
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="{TemplateBinding Content}"
+                                    FontFamily="pack://application:,,,/Resource/IconFont/#iconfont"
+                                    FontSize="15"
+                                    Foreground="{Binding Path=ColorConfig.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </ContentPresenter.Content>
+                        </ContentPresenter>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ColorConfig.ButtonHover, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseCaptured" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ColorConfig.ButtonClick, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="IconFontToggleButton" TargetType="ToggleButton">
         <Setter Property="Width" Value="30" />
         <Setter Property="Height" Value="30" />
@@ -69,6 +102,39 @@
         </Setter>
     </Style>
 
+    <Style x:Key="IconFontThemeToggleButton" TargetType="{x:Type uc:ThemeToggleBtn}">
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="border" BorderThickness="0">
+                        <ContentPresenter>
+                            <ContentPresenter.Content>
+                                <Label
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="{TemplateBinding Content}"
+                                    FontFamily="pack://application:,,,/Resource/IconFont/#iconfont"
+                                    FontSize="15"
+                                    Foreground="{Binding Path=ColorConfig.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </ContentPresenter.Content>
+                        </ContentPresenter>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ColorConfig.ButtonHover, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ColorConfig.ButtonClick, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ThemeRadioButton" TargetType="{x:Type uc:ThemeRbtn}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
@@ -78,27 +144,27 @@
                         x:Name="border"
                         Width="{TemplateBinding Width}"
                         Height="{TemplateBinding Height}"
-                        Background="{Binding Path=OptionItem.Theme.Option,RelativeSource={RelativeSource TemplatedParent}}"
+                        Background="{Binding Path=OptionItem.Theme.Option, RelativeSource={RelativeSource TemplatedParent}}"
                         BorderThickness="0">
                         <ContentPresenter>
                             <ContentPresenter.Content>
-                                <TextBlock                                   
-                                    Foreground="{Binding Path=OptionItem.Theme.Foreground,RelativeSource={RelativeSource TemplatedParent}}"
+                                <TextBlock
                                     x:Name="icon"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     FontFamily="pack://application:,,,/Resource/IconFont/#iconfont"
                                     FontSize="15"
-                                    Text="&#xe7fc;"/>
+                                    Foreground="{Binding Path=OptionItem.Theme.Foreground, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Text="&#xe7fc;" />
                             </ContentPresenter.Content>
                         </ContentPresenter>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{Binding Path=OptionItem.Theme.Hover,RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=OptionItem.Theme.Hover, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="IsMouseCaptured" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{Binding Path=OptionItem.Theme.Click,RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=OptionItem.Theme.Click, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="icon" Property="Visibility" Value="Visible" />

@@ -22,6 +22,10 @@ namespace DesktopNotes.ViewModel
         private ObservableCollection<ThemeOption> _themeOptions;
         private ThemeColor _selectedTheme;
         private Visibility _settingVisibility;
+        private bool _isAlwaysTopMost;
+        private bool _useLocalStorage;
+        private Visibility _canSaveNote;
+        private string _noteID;
 
         public bool IsBold
         {
@@ -124,6 +128,47 @@ namespace DesktopNotes.ViewModel
             }
         }
 
+        public bool IsAlwaysTopMost
+        {
+            get => _isAlwaysTopMost;
+            set
+            {
+                _isAlwaysTopMost = value;
+                OnPropertyChanged(nameof(IsAlwaysTopMost));
+            }
+        }
+
+        public bool UseLocalStorage
+        {
+            get => _useLocalStorage;
+            set
+            {
+                _useLocalStorage = value;
+                CanSaveNote = value ? Visibility.Visible : Visibility.Hidden;
+                OnPropertyChanged(nameof(UseLocalStorage));
+            }
+        }
+
+        public Visibility CanSaveNote
+        {
+            get => _canSaveNote;
+            set
+            {
+                _canSaveNote = value;
+                OnPropertyChanged(nameof(CanSaveNote));
+            }
+        }
+
+        public string NoteID
+        {
+            get => _noteID;
+            set
+            {
+                _noteID = value;
+                OnPropertyChanged(nameof(NoteID));
+            }
+        }
+
         public MainViewModel()
         {
             ToolbarSwitchIcon = "\ue7f4";
@@ -142,6 +187,8 @@ namespace DesktopNotes.ViewModel
                 new ThemeOption(colorRes.Charcoal,"炭笔",false),
             };
             ThemeOptions = new ObservableCollection<ThemeOption>(optionList);
+
+            IsAlwaysTopMost = true;
         }
     }
 }

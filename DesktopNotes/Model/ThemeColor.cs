@@ -19,5 +19,9 @@ namespace DesktopNotes.Model
         public string Click { get; set; }
 
         public string Foreground { get; set; }
+
+        public string ButtonHover { get; set; }
+
+        public string ButtonClick { get; set; }
     }
 }
