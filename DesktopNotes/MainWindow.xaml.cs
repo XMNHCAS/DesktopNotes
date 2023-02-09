@@ -1,11 +1,16 @@
-﻿using DesktopNotes.ViewModel;
+﻿using DesktopNotes.Model;
+using DesktopNotes.Resource.UserControllers;
+using DesktopNotes.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace DesktopNotes
 {
@@ -14,9 +19,13 @@ namespace DesktopNotes
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool isInitTheme = true;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = new MainViewModel();
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -25,8 +34,17 @@ namespace DesktopNotes
             var layer = AdornerLayer.GetAdornerLayer(c);
             layer.Add(new Utils.WindowResizeAdorner(c));
 
-            DataContext = new MainViewModel();
-
+            var data = DataContext as MainViewModel;
+            for (int i = 0; i < data.ThemeOptions.Count; i++)
+            {
+                theme_grid.ColumnDefinitions.Add(new ColumnDefinition());
+                var rbtn = new ThemeRbtn() { GroupName = "theme" };
+                rbtn.Checked += ThemeRbtn_Checked;
+                rbtn.SetBinding(ThemeRbtn.OptionItemProperty, new Binding() { Path = new PropertyPath($"ThemeOptions[{i}]") });
+                rbtn.SetBinding(ThemeRbtn.IsCheckedProperty, new Binding() { Path = new PropertyPath($"ThemeOptions[{i}].IsSelected") });
+                Grid.SetColumn(rbtn, i);
+                theme_grid.Children.Add(rbtn);
+            }
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -42,13 +60,13 @@ namespace DesktopNotes
         private void btn_NewForm_Click(object sender, RoutedEventArgs e)
         {
             var form = new MainWindow();
+            //(form.DataContext as MainViewModel).ThemeOptions =
+            //    new System.Collections.ObjectModel.ObservableCollection<ThemeOption>((DataContext as MainViewModel).ThemeOptions.ToList());
             form.Show();
         }
 
         private void btn_Strikethrough_Click(object sender, RoutedEventArgs e)
         {
-            Background = (System.Windows.Media.Brush)(new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0, 0, 0)));
-
             var temp = rbx_Content.Selection.GetPropertyValue(Inline.TextDecorationsProperty) as TextDecorationCollection;
 
             if (temp == null)
@@ -92,6 +110,139 @@ namespace DesktopNotes
             var arr = textDecorations as TextDecorationCollection;
             data.IsUnderLine = arr.Any(m => m.Location == TextDecorationLocation.Underline);
             data.IsStrikethrough = arr.Any(m => m.Location == TextDecorationLocation.Strikethrough);
+        }
+
+        private void rbx_Content_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textRange = new TextRange(rbx_Content.Document.ContentStart, rbx_Content.Document.ContentEnd);
+
+            if (string.IsNullOrWhiteSpace(textRange.Text))
+            {
+                placeholder.Visibility = Visibility.Visible;
+                //var run = new Run("记笔记...");
+                //var p = new Paragraph();
+                //p.Inlines.Add(run);
+                //rbx_Content.Document.Blocks.Add(p);
+            }
+            else
+            {
+                placeholder.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void btnToolbarSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            btnToolbarSwitch.IsEnabled = false;
+            bool isShow = false;
+            var storyboard = new Storyboard();
+
+            ThicknessAnimation animation = new ThicknessAnimation()
+            {
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                DecelerationRatio = 0.9f
+            };
+
+            var data = DataContext as MainViewModel;
+
+            void callback(object obj, EventArgs arge)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    if (isShow)
+                    {
+                        data.ToolbarVisibility = Visibility.Hidden;
+                    }
+
+                    btnToolbarSwitch.IsEnabled = true;
+                });
+
+            }
+
+            if (data.ToolbarVisibility == Visibility.Hidden)
+            {
+                data.ToolbarVisibility = Visibility.Visible;
+                data.ToolbarSwitchIcon = "\ue7f3";
+
+                animation.From = new Thickness(Width, 0, 0, 0);
+                animation.To = new Thickness(0);
+            }
+            else
+            {
+                data.ToolbarSwitchIcon = "\ue7f4";
+                isShow = true;
+                animation.From = new Thickness(0, 0, 0, 0);
+                animation.To = new Thickness(Width, 0, 0, 0);
+            }
+
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
+            Storyboard.SetTarget(animation, toolbarContainer);
+            storyboard.Completed += callback;
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
+
+        private void btn_Config_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).SettingVisibility = Visibility.Visible;
+            var storyboard = new Storyboard();
+
+            ThicknessAnimation animation = new ThicknessAnimation()
+            {
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                DecelerationRatio = 0.9f,
+                From = new Thickness(0, -200, 0, 0),
+                To = new Thickness(0, 0, 0, 0)
+            };
+
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
+            Storyboard.SetTarget(animation, settingPanel);
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
+
+        private void ThemeRbtn_Checked(object sender, RoutedEventArgs e)
+        {
+            var controller = sender as Resource.UserControllers.ThemeRbtn;
+            (DataContext as MainViewModel).SelectedTheme = controller.OptionItem.Theme;
+
+            if (!isInitTheme)
+            {
+                CloseSettingPanel();
+            }
+            else
+            {
+                (DataContext as MainViewModel).SettingVisibility = Visibility.Hidden;
+                isInitTheme = false;
+            }
+        }
+
+        private void btn_CloseSetting_Click(object sender, RoutedEventArgs e)
+        {
+            CloseSettingPanel();
+        }
+
+        private void CloseSettingPanel()
+        {
+            var storyboard = new Storyboard();
+
+            ThicknessAnimation animation = new ThicknessAnimation()
+            {
+                Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                DecelerationRatio = 0.9f,
+                From = new Thickness(0, 0, 0, 0),
+                To = new Thickness(0, -200, 0, 0)
+            };
+
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
+            Storyboard.SetTarget(animation, settingPanel);
+            storyboard.Children.Add(animation);
+            storyboard.Completed += callback;
+            storyboard.Begin();
+
+            void callback(object obj, EventArgs arg)
+            {
+                (DataContext as MainViewModel).SettingVisibility = Visibility.Hidden;
+            }
         }
     }
 }

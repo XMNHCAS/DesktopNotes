@@ -1,8 +1,12 @@
-﻿using System;
+﻿using DesktopNotes.Model;
+using DesktopNotes.Resource;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DesktopNotes.ViewModel
 {
@@ -12,6 +16,12 @@ namespace DesktopNotes.ViewModel
         private bool _isItalic;
         private bool _isUnderLine;
         private bool _isStrikethrough;
+        private string _toolbarSwitchIcon;
+        private string _toolbarSwitchToopTip;
+        private Visibility _toolbarVisibility;
+        private ObservableCollection<ThemeOption> _themeOptions;
+        private ThemeColor _selectedTheme;
+        private Visibility _settingVisibility;
 
         public bool IsBold
         {
@@ -51,6 +61,87 @@ namespace DesktopNotes.ViewModel
                 _isStrikethrough = value;
                 OnPropertyChanged(nameof(IsStrikethrough));
             }
+        }
+
+        public string ToolbarSwitchIcon
+        {
+            get => _toolbarSwitchIcon;
+            set
+            {
+                _toolbarSwitchIcon = value;
+                OnPropertyChanged(nameof(ToolbarSwitchIcon));
+            }
+        }
+
+        public string ToolbarSwitchToopTip
+        {
+            get => _toolbarSwitchToopTip;
+            set
+            {
+                _toolbarSwitchToopTip = value;
+                OnPropertyChanged(nameof(ToolbarSwitchToopTip));
+            }
+        }
+
+        public Visibility ToolbarVisibility
+        {
+            get => _toolbarVisibility;
+            set
+            {
+                _toolbarVisibility = value;
+                ToolbarSwitchToopTip = value == Visibility.Visible ? "折叠工具栏" : "显示工具栏";
+                OnPropertyChanged(nameof(ToolbarVisibility));
+            }
+        }
+
+        public ObservableCollection<ThemeOption> ThemeOptions
+        {
+            get => _themeOptions;
+            set
+            {
+                _themeOptions = value;
+                OnPropertyChanged(nameof(ThemeOptions));
+            }
+        }
+
+        public ThemeColor SelectedTheme
+        {
+            get => _selectedTheme;
+            set
+            {
+                _selectedTheme = value;
+                OnPropertyChanged(nameof(SelectedTheme));
+            }
+        }
+
+        public Visibility SettingVisibility
+        {
+            get => _settingVisibility;
+            set
+            {
+                _settingVisibility = value;
+                OnPropertyChanged(nameof(SettingVisibility));
+            }
+        }
+
+        public MainViewModel()
+        {
+            ToolbarSwitchIcon = "\ue7f4";
+            ToolbarVisibility = Visibility.Hidden;
+
+            var colorRes = new ColorResource();
+            List<ThemeOption> optionList = new List<ThemeOption>()
+            {
+
+                new ThemeOption(colorRes.Yellow,"黄色",true),
+                new ThemeOption(colorRes.Green,"绿色",false),
+                new ThemeOption(colorRes.Pink,"粉色",false),
+                new ThemeOption(colorRes.Purple,"紫色",false),
+                new ThemeOption(colorRes.Blue,"蓝色",false),
+                new ThemeOption(colorRes.Grey,"灰色",false),
+                new ThemeOption(colorRes.Charcoal,"炭笔",false),
+            };
+            ThemeOptions = new ObservableCollection<ThemeOption>(optionList);
         }
     }
 }

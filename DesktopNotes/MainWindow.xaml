@@ -5,10 +5,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DesktopNotes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:DesktopNotes.Resource.UserControllers"
     xmlns:viewmodel="clr-namespace:DesktopNotes.ViewModel"
+    x:Name="container"
     Title="MainWindow"
     Width="400"
     Height="300"
+    MinWidth="250"
+    MinHeight="150"
     MaxWidth="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}"
     MaxHeight="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"
     d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
@@ -23,7 +27,7 @@
 
     <Border
         Margin="10"
-        Background="#FFF7D1"
+        Background="{Binding SelectedTheme.Theme}"
         Opacity="1">
         <Border.Effect>
             <DropShadowEffect
@@ -34,114 +38,205 @@
         </Border.Effect>
 
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30px" />
-                <RowDefinition />
-                <RowDefinition Height="30px" />
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30px" />
+                    <RowDefinition />
+                    <RowDefinition Height="30px" />
+                </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Background="#FFF2AB">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30px" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="30px" />
-                    <ColumnDefinition Width="30px" />
-                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0" Background="{Binding SelectedTheme.Title}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30px" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="30px" />
+                        <ColumnDefinition Width="30px" />
+                    </Grid.ColumnDefinitions>
 
+                    <Button
+                        x:Name="btn_NewForm"
+                        Grid.Column="0"
+                        Click="btn_NewForm_Click"
+                        Content="&#59646;"
+                        Foreground="{Binding SelectedTheme.Foreground}"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="新建便笺" />
+                    <Button
+                        x:Name="btn_Config"
+                        Grid.Column="2"
+                        Click="btn_Config_Click"
+                        Content="&#59389;"
+                        Foreground="{Binding SelectedTheme.Foreground}"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="配置" />
+                    <Button
+                        x:Name="btn_Close"
+                        Grid.Column="3"
+                        Click="btn_Close_Click"
+                        Content="&#59390;"
+                        Foreground="{Binding SelectedTheme.Foreground}"
+                        Style="{StaticResource IconFontButton}"
+                        ToolTip="关闭" />
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="10">
+                    <TextBlock
+                        x:Name="placeholder"
+                        Margin="5,0,0,0"
+                        FontSize="15"
+                        Foreground="{Binding SelectedTheme.Foreground}"
+                        Text="记笔记..."
+                        Visibility="Visible" />
+                    <RichTextBox
+                        x:Name="rbx_Content"
+                        xml:lang="en-us"
+                        AcceptsTab="True"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="15"
+                        SelectionChanged="rbx_Content_SelectionChanged"
+                        SpellCheck.IsEnabled="True"
+                        TextChanged="rbx_Content_TextChanged">
+                        <RichTextBox.Resources>
+                            <Style TargetType="{x:Type Paragraph}">
+                                <Setter Property="Margin" Value="0,5" />
+                                <Setter Property="Foreground" Value="{Binding SelectedTheme.Foreground}" />
+                            </Style>
+
+                        </RichTextBox.Resources>
+                    </RichTextBox>
+                </Grid>
+
+                <Border
+                    x:Name="toolbarContainer"
+                    Grid.Row="2"
+                    BorderBrush="LightGray"
+                    BorderThickness="0,1,0,0"
+                    Visibility="{Binding ToolbarVisibility}">
+
+                    <WrapPanel>
+                        <WrapPanel.Resources>
+                            <Style
+                                x:Key="CommandButton"
+                                BasedOn="{StaticResource IconFontButton}"
+                                TargetType="{x:Type Button}">
+                                <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
+                                <Setter Property="Foreground" Value="{Binding SelectedTheme.Foreground}" />
+                            </Style>
+                            <Style
+                                x:Key="CommandToggleButton"
+                                BasedOn="{StaticResource IconFontToggleButton}"
+                                TargetType="{x:Type ToggleButton}">
+                                <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
+                                <Setter Property="Foreground" Value="{Binding SelectedTheme.Foreground}" />
+                            </Style>
+                        </WrapPanel.Resources>
+                        <ToggleButton
+                            Grid.Column="0"
+                            Command="EditingCommands.ToggleBold"
+                            Content="&#59383;"
+                            IsChecked="{Binding IsBold}"
+                            Style="{StaticResource CommandToggleButton}"
+                            ToolTip="加粗" />
+                        <ToggleButton
+                            Grid.Column="2"
+                            Command="EditingCommands.ToggleItalic"
+                            Content="&#59387;"
+                            IsChecked="{Binding IsItalic}"
+                            Style="{StaticResource CommandToggleButton}"
+                            ToolTip="斜体" />
+                        <ToggleButton
+                            Grid.Column="3"
+                            Command="EditingCommands.ToggleUnderline"
+                            Content="&#59386;"
+                            IsChecked="{Binding IsUnderLine}"
+                            Style="{StaticResource CommandToggleButton}"
+                            ToolTip="下划线" />
+                        <ToggleButton
+                            x:Name="btn_Strikethrough"
+                            Grid.Column="0"
+                            Click="btn_Strikethrough_Click"
+                            Content="&#59385;"
+                            IsChecked="{Binding IsStrikethrough}"
+                            Style="{StaticResource CommandToggleButton}"
+                            ToolTip="删除线" />
+                        <Button
+                            Grid.Column="2"
+                            Command="EditingCommands.ToggleBullets"
+                            Content="&#59381;"
+                            Style="{StaticResource CommandButton}"
+                            ToolTip="无序列表" />
+                        <Button
+                            Grid.Column="3"
+                            Command="EditingCommands.ToggleBold"
+                            Content="&#59358;"
+                            Style="{StaticResource CommandButton}"
+                            ToolTip="插入图片" />
+                    </WrapPanel>
+                </Border>
 
                 <Button
-                    x:Name="btn_NewForm"
-                    Grid.Column="0"
-                    Click="btn_NewForm_Click"
-                    Content="&#59646;"
-                    Style="{StaticResource IconFontButton}" />
-                <Button
-                    Grid.Column="2"
-                    Content="&#59389;"
-                    Style="{StaticResource IconFontButton}" />
-                <Button
-                    x:Name="btn_Close"
-                    Grid.Column="3"
-                    Click="btn_Close_Click"
-                    Content="&#59390;"
-                    Style="{StaticResource IconFontButton}" />
+                    x:Name="btnToolbarSwitch"
+                    Grid.Row="2"
+                    HorizontalAlignment="Right"
+                    Click="btnToolbarSwitch_Click"
+                    Content="{Binding ToolbarSwitchIcon}"
+                    Foreground="{Binding SelectedTheme.Foreground}"
+                    Style="{StaticResource IconFontButton}"
+                    ToolTip="{Binding ToolbarSwitchToopTip}" />
             </Grid>
 
-            <Grid Grid.Row="1" Margin="10">
-                <RichTextBox
-                    x:Name="rbx_Content"
-                    xml:lang="en-us"
-                    AcceptsTab="True"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontSize="15"
-                    SelectionChanged="rbx_Content_SelectionChanged"
-                    SpellCheck.IsEnabled="True" />
+            <Grid
+                x:Name="settingPanel"
+                Width="{Binding ElementName=container, Path=Width}"
+                HorizontalAlignment="Right"
+                Visibility="{Binding SettingVisibility}">
+
+                <Button x:Name="btn_CloseSetting" Click="btn_CloseSetting_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Border x:Name="border" Background="Transparent">
+                                            <ContentPresenter />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Border
+                    Width="{Binding ElementName=container, Path=Width}"
+                    Height="100px"
+                    MinWidth="200px"
+                    VerticalAlignment="Top"
+                    Background="#f7f7f7"
+                    Opacity="1">
+                    <Border.Effect>
+                        <DropShadowEffect
+                            BlurRadius="20"
+                            Opacity="0.4"
+                            ShadowDepth="0"
+                            Color="#FFAAAAAA" />
+                    </Border.Effect>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid x:Name="theme_grid">
+                            <Grid.Resources>
+                                <Style BasedOn="{StaticResource ThemeRadioButton}" TargetType="{x:Type uc:ThemeRbtn}" />
+                            </Grid.Resources>
+                        </Grid>
+                    </Grid>
+                </Border>
             </Grid>
-
-            <Border
-                Grid.Row="2"
-                BorderBrush="LightGray"
-                BorderThickness="0,1,0,0">
-
-                <WrapPanel>
-                    <WrapPanel.Resources>
-                        <Style
-                            x:Key="CommandButton"
-                            BasedOn="{StaticResource IconFontButton}"
-                            TargetType="{x:Type Button}">
-                            <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
-                        </Style>
-                        <Style
-                            x:Key="CommandToggleButton"
-                            BasedOn="{StaticResource IconFontToggleButton}"
-                            TargetType="{x:Type ToggleButton}">
-                            <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
-                        </Style>
-                    </WrapPanel.Resources>
-                    <ToggleButton
-                        Grid.Column="0"
-                        Command="EditingCommands.ToggleBold"
-                        Content="&#59383;"
-                        IsChecked="{Binding IsBold}"
-                        Style="{StaticResource CommandToggleButton}"
-                        ToolTip="加粗" />
-                    <ToggleButton
-                        Grid.Column="2"
-                        Command="EditingCommands.ToggleItalic"
-                        Content="&#59387;"
-                        IsChecked="{Binding IsItalic}"
-                        Style="{StaticResource CommandToggleButton}"
-                        ToolTip="斜体" />
-                    <ToggleButton
-                        Grid.Column="3"
-                        Command="EditingCommands.ToggleUnderline"
-                        Content="&#59386;"
-                        IsChecked="{Binding IsUnderLine}"
-                        Style="{StaticResource CommandToggleButton}"
-                        ToolTip="下划线" />
-                    <ToggleButton
-                        x:Name="btn_Strikethrough"
-                        Grid.Column="0"
-                        Click="btn_Strikethrough_Click"
-                        Content="&#59385;"
-                        IsChecked="{Binding IsStrikethrough}"
-                        Style="{StaticResource CommandToggleButton}"
-                        ToolTip="删除线" />
-                    <Button
-                        Grid.Column="2"
-                        Command="EditingCommands.ToggleBullets"
-                        Content="&#59381;"
-                        Style="{StaticResource CommandButton}"
-                        ToolTip="无序列表" />
-                    <Button
-                        Grid.Column="3"
-                        Command="EditingCommands.ToggleBold"
-                        Content="&#59358;"
-                        Style="{StaticResource CommandButton}"
-                        ToolTip="插入图片" />
-                </WrapPanel>
-            </Border>
         </Grid>
     </Border>
 </Window>

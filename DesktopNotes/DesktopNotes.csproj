@@ -54,7 +54,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\ThemeColor.cs" />
+    <Compile Include="Model\ThemeOption.cs" />
     <Compile Include="Resource\ColorResource.cs" />
+    <Compile Include="Resource\UserControllers\ThemeRbtn.cs" />
     <Compile Include="Utils\WindowResizeAdorner.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
