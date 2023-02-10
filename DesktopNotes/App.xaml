@@ -9,6 +9,8 @@
             <!--全局静态样式资源引用-->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DesktopNotes;component/Resource/Styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="/DesktopNotes;component/Resource/Styles/ScrollStyles.xaml"/>
+                <ResourceDictionary Source="/DesktopNotes;component/Resource/Styles/ContextMenuStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

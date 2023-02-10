@@ -78,16 +78,23 @@
     </ApplicationDefinition>
     <Compile Include="Model\ThemeColor.cs" />
     <Compile Include="Model\ThemeOption.cs" />
+    <Compile Include="Model\ViewNote.cs" />
     <Compile Include="Resource\ColorResource.cs" />
+    <Compile Include="Resource\UserControllers\RichTextBoxHelper.cs" />
     <Compile Include="Resource\UserControllers\ThemeButton.cs" />
     <Compile Include="Resource\UserControllers\ThemeRbtn.cs" />
     <Compile Include="Resource\UserControllers\ThemeToggleBtn.cs" />
     <Compile Include="Utils\DataBase\DAL\NotesDAL.cs" />
     <Compile Include="Utils\DataBase\Instance.cs" />
     <Compile Include="Utils\DataBase\Models\Notes.cs" />
+    <Compile Include="Utils\DocumnetAnalysis.cs" />
     <Compile Include="Utils\WindowResizeAdorner.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\NoteListViewModel.cs" />
+    <Compile Include="Views\NoteList.xaml.cs">
+      <DependentUpon>NoteList.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -101,6 +108,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resource\Styles\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resource\Styles\ContextMenuStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resource\Styles\ScrollStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NoteList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

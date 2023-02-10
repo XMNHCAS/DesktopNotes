@@ -189,6 +189,7 @@ namespace DesktopNotes.ViewModel
             ThemeOptions = new ObservableCollection<ThemeOption>(optionList);
 
             IsAlwaysTopMost = true;
+            CanSaveNote = Visibility.Hidden;
         }
     }
 }

@@ -118,16 +118,16 @@
                                     Content="{TemplateBinding Content}"
                                     FontFamily="pack://application:,,,/Resource/IconFont/#iconfont"
                                     FontSize="15"
-                                    Foreground="{Binding Path=ColorConfig.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    Foreground="{Binding Path=ThemeConfig.Foreground, RelativeSource={RelativeSource TemplatedParent}}" />
                             </ContentPresenter.Content>
                         </ContentPresenter>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ColorConfig.ButtonHover, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ThemeConfig.ButtonHover, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ColorConfig.ButtonClick, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="border" Property="Background" Value="{Binding Path=ThemeConfig.ButtonClick, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

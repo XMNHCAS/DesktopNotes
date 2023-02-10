@@ -25,8 +25,9 @@ namespace DesktopNotes.Utils.DataBase
             if (!File.Exists(path))
             {
                 DB.DbMaintenance.CreateDatabase();
-                DB.CodeFirst.InitTables(typeof(Models.Notes));
             }
+
+            DB.CodeFirst.InitTables(typeof(Models.Notes));
 
             return DB;
         }

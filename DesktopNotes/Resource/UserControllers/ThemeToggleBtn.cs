@@ -11,13 +11,13 @@ namespace DesktopNotes.Resource.UserControllers
 {
     public class ThemeToggleBtn : ToggleButton
     {
-        public static readonly DependencyProperty ColorConfigProperty =
-           DependencyProperty.RegisterAttached(nameof(ColorConfig), typeof(ThemeColor), typeof(ToggleButton), new PropertyMetadata());
+        public static readonly DependencyProperty ThemeConfigProperty =
+           DependencyProperty.RegisterAttached(nameof(ThemeConfig), typeof(ThemeColor), typeof(ToggleButton), new PropertyMetadata());
 
-        public ThemeColor ColorConfig
+        public ThemeColor ThemeConfig
         {
-            get => (ThemeColor)GetValue(ColorConfigProperty);
-            set => SetValue(ColorConfigProperty, value);
+            get => (ThemeColor)GetValue(ThemeConfigProperty);
+            set => SetValue(ThemeConfigProperty, value);
         }
     }
 }

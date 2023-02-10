@@ -8,7 +8,7 @@
     xmlns:uc="clr-namespace:DesktopNotes.Resource.UserControllers"
     xmlns:viewmodel="clr-namespace:DesktopNotes.ViewModel"
     x:Name="container"
-    Title="MainWindow"
+    Title="便笺"
     Width="400"
     Height="300"
     MinWidth="280"
@@ -102,7 +102,6 @@
                                 <Setter Property="Margin" Value="0,5" />
                                 <Setter Property="Foreground" Value="{Binding SelectedTheme.Foreground}" />
                             </Style>
-
                         </RichTextBox.Resources>
                     </RichTextBox>
                 </Grid>
@@ -142,7 +141,7 @@
                             </Style>
                             <Style BasedOn="{StaticResource IconFontThemeToggleButton}" TargetType="{x:Type uc:ThemeToggleBtn}">
                                 <Setter Property="CommandTarget" Value="{Binding ElementName=rbx_Content}" />
-                                <Setter Property="ColorConfig" Value="{Binding SelectedTheme}" />
+                                <Setter Property="ThemeConfig" Value="{Binding SelectedTheme}" />
                             </Style>
                         </WrapPanel.Resources>
                         <uc:ThemeToggleBtn
@@ -178,7 +177,8 @@
                             x:Name="btn_SaveNote"
                             Click="btn_SaveNote_Click"
                             Content="&#xe791;"
-                            ToolTip="保存" />
+                            ToolTip="保存"
+                            Visibility="{Binding CanSaveNote}" />
                     </WrapPanel>
                 </Border>
 
@@ -236,7 +236,7 @@
 
                             <Grid.Resources>
                                 <Style BasedOn="{StaticResource IconFontThemeToggleButton}" TargetType="{x:Type uc:ThemeToggleBtn}">
-                                    <Setter Property="ColorConfig" Value="{Binding SelectedTheme}" />
+                                    <Setter Property="ThemeConfig" Value="{Binding SelectedTheme}" />
                                 </Style>
                                 <Style BasedOn="{StaticResource IconFontThemeButton}" TargetType="{x:Type uc:ThemeButton}">
                                     <Setter Property="ColorConfig" Value="{Binding SelectedTheme}" />
@@ -270,7 +270,11 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
-                                <uc:ThemeButton Content="&#xe850;" ToolTip="笔记列表" />
+                                <uc:ThemeButton
+                                    x:Name="btn_NoteList"
+                                    Click="btn_NoteList_Click"
+                                    Content="&#xe850;"
+                                    ToolTip="笔记列表" />
                                 <TextBlock Text="笔记列表" />
                             </StackPanel>
                         </Grid>

@@ -19,7 +19,7 @@ namespace DesktopNotes.Utils.DataBase.DAL
 
         public List<Notes> RetrieveNoteList()
         {
-            return DB.Queryable<Notes>().ToList();
+            return DB.Queryable<Notes>().Where(m => string.IsNullOrEmpty(m.DeleteTime)).ToList();
         }
 
         public Notes RetrieveNoteContent(string id)

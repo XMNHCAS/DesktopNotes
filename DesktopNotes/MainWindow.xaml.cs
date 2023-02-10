@@ -215,7 +215,7 @@ namespace DesktopNotes
 
             if (!isInitTheme)
             {
-                CloseSettingPanel();
+                //CloseSettingPanel();
             }
             else
             {
@@ -255,44 +255,40 @@ namespace DesktopNotes
 
         private void btn_SaveNote_Click(object sender, RoutedEventArgs e)
         {
-            //using (var stream = new MemoryStream())
-            //{
-            //    XamlWriter.Save(rbx_Content.Document, stream);
-            //    byte[] bytes = new byte[stream.Length];
-            //    stream.Position = 0;
-            //    stream.Read(bytes, 0, bytes.Length);
+            using (var stream = new MemoryStream())
+            {
+                XamlWriter.Save(rbx_Content.Document, stream);
+                byte[] bytes = new byte[stream.Length];
+                stream.Position = 0;
+                stream.Read(bytes, 0, bytes.Length);
 
-            //    var data = DataContext as MainViewModel;
-            //    var dal = new Utils.DataBase.DAL.NotesDAL();
+                var data = DataContext as MainViewModel;
+                var dal = new Utils.DataBase.DAL.NotesDAL();
 
-            //    //var textRange = new TextRange(rbx_Content.Document.ContentStart, rbx_Content.Document.ContentEnd);
-            //    //string note = textRange.Text;
+                //var textRange = new TextRange(rbx_Content.Document.ContentStart, rbx_Content.Document.ContentEnd);
+                //string note = textRange.Text;
 
-            //    string note = Convert.ToBase64String(bytes);
+                string note = Convert.ToBase64String(bytes);
 
-            //    if (string.IsNullOrWhiteSpace(data.NoteID))
-            //    {
-            //        data.NoteID = dal.CreateNote(note);
-            //    }
-            //    else
-            //    {
-            //        dal.UpdateNote(data.NoteID, note);
-            //    }
-            //}
+                if (string.IsNullOrWhiteSpace(data.NoteID))
+                {
+                    data.NoteID = dal.CreateNote(note);
+                }
+                else
+                {
+                    dal.UpdateNote(data.NoteID, note);
+                }
+            }
 
-            var dal = new Utils.DataBase.DAL.NotesDAL();
-            var res = dal.RetrieveNoteContent("eaf51676-4984-48a3-b126-3ea346ce8b91");
-            AnalysisNoteFromDatabase(res.Content);
+            //var dal = new Utils.DataBase.DAL.NotesDAL();
+            //var res = dal.RetrieveNoteContent("eaf51676-4984-48a3-b126-3ea346ce8b91");
+            //AnalysisNoteFromDatabase(res.Content);
         }
 
-        private void AnalysisNoteFromDatabase(string base64Str)
+        private void btn_NoteList_Click(object sender, RoutedEventArgs e)
         {
-            byte[] bytes = Convert.FromBase64String(base64Str);
-            using (var stream = new MemoryStream(bytes))
-            {
-                var doc = XamlReader.Load(stream) as FlowDocument;
-                rbx_Content.Document = doc;
-            }
+            var noteList = new Views.NoteList();
+            noteList.Show();
         }
     }
 }
