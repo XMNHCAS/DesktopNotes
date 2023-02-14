@@ -19,7 +19,10 @@ namespace DesktopNotes.Utils.DataBase.DAL
 
         public List<Notes> RetrieveNoteList()
         {
-            return DB.Queryable<Notes>().Where(m => string.IsNullOrEmpty(m.DeleteTime)).ToList();
+            return DB.Queryable<Notes>()
+                .Where(m => string.IsNullOrEmpty(m.DeleteTime))
+                .OrderBy(m => m.UpdateTime, OrderByType.Desc)
+                .ToList();
         }
 
         public Notes RetrieveNoteContent(string id)
@@ -47,7 +50,6 @@ namespace DesktopNotes.Utils.DataBase.DAL
                 ID = id,
                 Content = note,
                 UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                DeleteTime = null
             }).IgnoreColumns(m => new { m.CreateTime, m.DeleteTime }).WhereColumns(m => new { m.ID }).ExecuteCommand();
         }
 

@@ -34,7 +34,7 @@
                 BlurRadius="10"
                 Opacity="0.4"
                 ShadowDepth="0"
-                Color="#FFAAAAAA" />
+                Color="#FFAAAA" />
         </Border.Effect>
 
         <Grid>
@@ -49,6 +49,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="30px" />
                         <ColumnDefinition />
+                        <ColumnDefinition Width="30px" />
                         <ColumnDefinition Width="30px" />
                         <ColumnDefinition Width="30px" />
                     </Grid.ColumnDefinitions>
@@ -68,11 +69,17 @@
                         x:Name="btn_Config"
                         Grid.Column="2"
                         Click="btn_Config_Click"
-                        Content="&#59389;"
+                        Content="&#xe78e;"
                         ToolTip="配置" />
                     <uc:ThemeButton
-                        x:Name="btn_Close"
+                        x:Name="btn_MinSize"
                         Grid.Column="3"
+                        Click="btn_MinSize_Click"
+                        Content="&#xe7ff;"
+                        ToolTip="最小化" />
+                    <uc:ThemeButton
+                        x:Name="btn_Close"
+                        Grid.Column="4"
                         Click="btn_Close_Click"
                         Content="&#59390;"
                         ToolTip="关闭" />
@@ -172,7 +179,8 @@
                         <uc:ThemeButton
                             Command="EditingCommands.ToggleBold"
                             Content="&#59358;"
-                            ToolTip="插入图片" />
+                            ToolTip="插入图片"
+                            Visibility="Collapsed"/>
                         <uc:ThemeButton
                             x:Name="btn_SaveNote"
                             Click="btn_SaveNote_Click"

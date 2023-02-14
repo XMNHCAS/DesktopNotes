@@ -46,13 +46,13 @@ namespace DesktopNotes.Resource
 
         public ColorResource()
         {
-            Yellow = new ThemeColor() { Theme = "#FFF7D1", Option = "#FFE66E", Hover = "#EED767", Title = "#FFF2AB", Click = "#DCD194", Foreground = "#000000", ButtonHover = "#EEE7C3", ButtonClick = "#DCD5B4" };
-            Green = new ThemeColor() { Theme = "#E4F9E0", Option = "#CBF1C4", Hover = "#96DF91", Title = "#A1EF9B", Click = "#8BCE86", Foreground = "#000000", ButtonHover = "#D5E8D1", ButtonClick = "#C5D7C1" };
-            Pink = new ThemeColor() { Theme = "#FFE4F1", Option = "#FFAFDF", Hover = "#EEA3D0", Title = "#FFCCE5", Click = "#DC97C0", Foreground = "#000000", ButtonHover = "#EED5E1", ButtonClick = "#DCC5D0" };
-            Purple = new ThemeColor() { Theme = "#F2E6FF", Option = "#D7AFFF", Hover = "#C9A3EE", Title = "#E7CFFF", Click = "#B997DC", Foreground = "#000000", ButtonHover = "#E2D7EE", ButtonClick = "#D1C6DC" };
-            Blue = new ThemeColor() { Theme = "#E2F1FF", Option = "#9EDFFF", Hover = "#93D0EE", Title = "#CDE9FF", Click = "#88C0DC", Foreground = "#000000", ButtonHover = "#D3E1EE", ButtonClick = "#C3D0DC" };
-            Grey = new ThemeColor() { Theme = "#F3F2F1", Option = "#E0E0E0", Hover = "#D1D1D1", Title = "#E1DFDD", Click = "#C1C1C1", Foreground = "#000000", ButtonHover = "#E3E2E1", ButtonClick = "#D2D1D0" };
-            Charcoal = new ThemeColor() { Theme = "#696969", Option = "#767676", Hover = "#7F7F7F", Title = "#494745", Click = "#898989", Foreground = "#FFFFFF", ButtonHover = "#737373", ButtonClick = "#7E7E7E" };
+            Yellow = new ThemeColor("#FFF7D1", "#FFE66E", "#EED767", "#FFF2AB", "#DCD194", "#000000", "#EEE7C3", "#DCD5B4");
+            Green = new ThemeColor("#E4F9E0", "#CBF1C4", "#96DF91", "#A1EF9B", "#8BCE86", "#000000", "#D5E8D1", "#C5D7C1");
+            Pink = new ThemeColor("#FFE4F1", "#FFAFDF", "#EEA3D0", "#FFCCE5", "#DC97C0", "#000000", "#EED5E1", "#DCC5D0");
+            Purple = new ThemeColor("#F2E6FF", "#D7AFFF", "#C9A3EE", "#E7CFFF", "#B997DC", "#000000", "#E2D7EE", "#D1C6DC");
+            Blue = new ThemeColor("#E2F1FF", "#9EDFFF", "#93D0EE", "#CDE9FF", "#88C0DC", "#000000", "#D3E1EE", "#C3D0DC");
+            Grey = new ThemeColor("#F3F2F1", "#E0E0E0", "#D1D1D1", "#E1DFDD", "#C1C1C1", "#000000", "#E3E2E1", "#D2D1D0");
+            Charcoal = new ThemeColor("#696969", "#767676", "#7F7F7F", "#494745", "#898989", "#FFFFFF", "#737373", "#7E7E7E");
         }
     }
 }

@@ -78,9 +78,12 @@
     </ApplicationDefinition>
     <Compile Include="Model\ThemeColor.cs" />
     <Compile Include="Model\ThemeOption.cs" />
-    <Compile Include="Model\ViewNote.cs" />
+    <Compile Include="ViewModel\ViewNote.cs" />
     <Compile Include="Resource\ColorResource.cs" />
-    <Compile Include="Resource\UserControllers\RichTextBoxHelper.cs" />
+    <Compile Include="Resource\UserControllers\BindingRbx.cs" />
+    <Compile Include="Resource\UserControllers\LoadingAnimation.xaml.cs">
+      <DependentUpon>LoadingAnimation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Resource\UserControllers\ThemeButton.cs" />
     <Compile Include="Resource\UserControllers\ThemeRbtn.cs" />
     <Compile Include="Resource\UserControllers\ThemeToggleBtn.cs" />
@@ -116,6 +119,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resource\Styles\ScrollStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resource\UserControllers\LoadingAnimation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

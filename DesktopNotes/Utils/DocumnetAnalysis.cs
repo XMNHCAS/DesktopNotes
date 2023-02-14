@@ -13,10 +13,24 @@ namespace DesktopNotes.Utils
     {
         public static FlowDocument AnalysisNoteFromDatabase(string base64Str)
         {
-            byte[] bytes = Convert.FromBase64String(base64Str);
-            using (var stream = new MemoryStream(bytes))
+            try
             {
-                return XamlReader.Load(stream) as FlowDocument;
+                byte[] bytes = Convert.FromBase64String(base64Str);
+                using (var stream = new MemoryStream(bytes))
+                {
+                    return XamlReader.Load(stream) as FlowDocument;
+                }
+            }
+            catch (Exception)
+            {
+                using (var stream = new MemoryStream(Encoding.Default.GetBytes("")))
+                {
+                    var paragraph = new Paragraph();
+                    paragraph.Inlines.Add(new Run(""));
+                    var res = new FlowDocument();
+                    res.Blocks.Add(paragraph);
+                    return res;
+                }
             }
         }
 

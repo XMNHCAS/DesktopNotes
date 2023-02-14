@@ -16,7 +16,7 @@
     MaxHeight="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}"
     d:DataContext="{d:DesignInstance Type=viewmodel:NoteListViewModel}"
     AllowsTransparency="True"
-    Background="White"
+    Background="Transparent"
     Loaded="Window_Loaded"
     MouseLeftButtonDown="Window_MouseLeftButtonDown"
     ResizeMode="NoResize"
@@ -24,158 +24,161 @@
     WindowStyle="None"
     mc:Ignorable="d">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30px" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="30px" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="30px" />
-                <ColumnDefinition Width="30px" />
-            </Grid.ColumnDefinitions>
-            <Grid.Resources>
-                <Style BasedOn="{StaticResource IconFontThemeButton}" TargetType="{x:Type uc:ThemeButton}">
-                    <Setter Property="ColorConfig" Value="{Binding SelectedTheme}" />
-                </Style>
-            </Grid.Resources>
-
-            <uc:ThemeButton
-                x:Name="btn__NewForm"
-                Grid.Column="0"
-                Content="&#59646;"
-                ToolTip="新建便笺" />
-            <TextBlock
-                Grid.Column="1"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="15"
-                FontWeight="Bold"
-                Text="便笺列表" />
-            <uc:ThemeButton
-                x:Name="btn_Setting"
-                Grid.Column="2"
-                Content="&#xe78e;"
-                ToolTip="设置" />
-            <uc:ThemeButton
-                x:Name="btn_Close"
-                Grid.Column="3"
-                Click="btn_Close_Click"
-                Content="&#59390;"
-                ToolTip="关闭" />
-        </Grid>
-
-        <Grid Grid.Row="1">
+    <Border
+        Margin="10"
+        Background="White"
+        Opacity="1">
+        <Border.Effect>
+            <DropShadowEffect
+                BlurRadius="10"
+                Opacity="0.4"
+                ShadowDepth="0"
+                Color="#FFAAAA" />
+        </Border.Effect>
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition />
                 <RowDefinition Height="30px" />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <ListView
-                HorizontalContentAlignment="Stretch"
-                BorderThickness="0"
-                ItemsSource="{Binding Notes}"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                Template="{StaticResource NormalListBoxControlTemplate}">
-                <ListView.Resources>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30px" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30px" />
+                    <ColumnDefinition Width="30px" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style BasedOn="{StaticResource IconFontThemeButton}" TargetType="{x:Type uc:ThemeButton}">
+                        <Setter Property="ColorConfig" Value="{Binding SelectedTheme}" />
                     </Style>
-                </ListView.Resources>
+                </Grid.Resources>
 
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                <Button
+                    x:Name="btn_NewForm"
+                    Grid.Column="0"
+                    Click="btn_NewForm_Click"
+                    Content="&#59646;"
+                    Style="{StaticResource OnlyIconButton}"
+                    ToolTip="新建便笺" />
+                <TextBlock
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Text="便笺列表" />
+                <Button
+                    x:Name="btn_MinSize"
+                    Grid.Column="2"
+                    Click="btn_MinSize_Click"
+                    Content="&#xe7ff;"
+                    Style="{StaticResource OnlyIconButton}"
+                    ToolTip="最小化" />
+                <Button
+                    x:Name="btn_Close"
+                    Grid.Column="3"
+                    Click="btn_Close_Click"
+                    Content="&#59390;"
+                    Style="{StaticResource OnlyIconButton}"
+                    ToolTip="关闭" />
+            </Grid>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <!--  #FFF7D1  -->
-                        <Grid Margin="10">
-                            <Grid.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem
-                                        x:Name="menu_RemoveNote"
-                                        Click="menu_RemoveNote_Click"
-                                        Header="移除此笔记"
-                                        Tag="{Binding ID}" />
-                                </ContextMenu>
-                            </Grid.ContextMenu>
-                            <Border
-                                x:Name="border"
-                                Padding="10"
-                                Background="#FFF7D1"
-                                CornerRadius="5">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="20px" />
-                                        <RowDefinition MinHeight="40px" />
-                                    </Grid.RowDefinitions>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="30px" />
+                </Grid.RowDefinitions>
+                <ListView
+                    HorizontalContentAlignment="Stretch"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Notes}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Template="{StaticResource NormalListBoxControlTemplate}">
+                    <ListView.Resources>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.Resources>
 
-                                    <TextBlock
-                                        x:Name="tbk_UpdateTime"
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Right"
-                                        FontSize="10"
-                                        Text="{Binding UpdateTime}"
-                                        ToolTip="最后更新时间" />
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                                    <RichTextBox
-                                        x:Name="rbx_item"
-                                        Grid.Row="1"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        
-                                        uc:RichTextBoxHelper.DocumentXaml="{Binding Content}"/>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <!--  #FFF7D1  -->
+                            <Grid Margin="10">
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem
+                                            x:Name="menu_RemoveNote"
+                                            Click="menu_RemoveNote_Click"
+                                            Header="移除此笔记"
+                                            Tag="{Binding ID}" />
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
 
-                                    <!--<Button
-                                        Grid.Column="2"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Content="&#xe863;"
-                                        FontFamily="pack://application:,,,/Resource/IconFont/#iconfont"
-                                        FontSize="20"
-                                        Foreground="Red"
-                                        ToolTip="移除此笔记" />-->
-                                </Grid>
-                            </Border>
+                                <Border
+                                    x:Name="border"
+                                    Padding="10"
+                                    Background="{Binding Theme.Theme}"
+                                    CornerRadius="5">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20px" />
+                                            <RowDefinition MinHeight="40px" />
+                                        </Grid.RowDefinitions>
 
-                            <Rectangle
-                                Width="10"
-                                Height="10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Fill="White" />
-                            <Path
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Data="M 0,0 L 12,0 L0,12 Z"
-                                Fill="LightGray" />
-                        </Grid>
-                        <DataTemplate.Triggers>
-                            <!--<Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="tbk_UpdateTime" Property="Visibility" Value="Hidden" />
-                                <Setter TargetName="btn_Menu" Property="Visibility" Value="Visible" />
-                            </Trigger>-->
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                                        <TextBlock
+                                            x:Name="tbk_UpdateTime"
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            FontSize="10"
+                                            Foreground="{Binding Theme.Foreground}"
+                                            Text="{Binding UpdateTime}"
+                                            ToolTip="最后更新时间" />
 
-            <!--<Button
-                Grid.Row="1"
-                Click="Button_Click"
-                Content="111" />-->
+                                        <uc:BindingRbx
+                                            x:Name="rbx_item"
+                                            Grid.Row="1"
+                                            Background="Transparent"
+                                            BindingContent="{Binding Content}"
+                                            BorderThickness="0"
+                                            Foreground="{Binding Theme.Foreground}" />
+                                    </Grid>
+                                </Border>
+
+                                <Button
+                                    x:Name="lvItemBtn"
+                                    Click="lvItemBtn_Click"
+                                    Style="{StaticResource NoBgBtn}" />
+
+                                <Rectangle
+                                    Width="10"
+                                    Height="10"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Fill="White" />
+                                <Path
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Data="M 0,0 L 10,0 L0,10 Z"
+                                    Fill="LightGray" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </Window>

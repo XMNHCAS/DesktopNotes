@@ -21,6 +21,8 @@ namespace DesktopNotes
     /// </summary>
     public partial class MainWindow : Window
     {
+        public event EventHandler<string> OnCreateNote;
+        public event EventHandler<string> OnUpdateNote;
         private bool isInitTheme = true;
 
         public MainWindow()
@@ -29,6 +31,16 @@ namespace DesktopNotes
 
             DataContext = new MainViewModel();
         }
+
+        public MainWindow(ViewNote note)
+        {
+            InitializeComponent();
+
+            DataContext = new MainViewModel(note);
+
+            rbx_Content.Document = Utils.DocumnetAnalysis.AnalysisNoteFromDatabase(note.Content);
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //将装饰器添加到窗口的Content控件上
@@ -47,6 +59,10 @@ namespace DesktopNotes
                 Grid.SetColumn(rbtn, i);
                 theme_grid.Children.Add(rbtn);
             }
+
+            data.OnStorageModeChanged += OnStorageModeChanged;
+            OnCreateNote += data.CreateEvent;
+            OnUpdateNote += data.UpdateEvent;
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -57,6 +73,11 @@ namespace DesktopNotes
         private void btn_Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void btn_MinSize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
         }
 
         private void btn_NewForm_Click(object sender, RoutedEventArgs e)
@@ -152,20 +173,6 @@ namespace DesktopNotes
 
             var data = DataContext as MainViewModel;
 
-            void callback(object obj, EventArgs arge)
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    if (isShow)
-                    {
-                        data.ToolbarVisibility = Visibility.Hidden;
-                    }
-
-                    btnToolbarSwitch.IsEnabled = true;
-                });
-
-            }
-
             if (data.ToolbarVisibility == Visibility.Hidden)
             {
                 data.ToolbarVisibility = Visibility.Visible;
@@ -184,7 +191,20 @@ namespace DesktopNotes
 
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
             Storyboard.SetTarget(animation, toolbarContainer);
-            storyboard.Completed += callback;
+
+            storyboard.Completed += (obj, arge) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    if (isShow)
+                    {
+                        data.ToolbarVisibility = Visibility.Hidden;
+                    }
+
+                    btnToolbarSwitch.IsEnabled = true;
+                });
+            };
+
             storyboard.Children.Add(animation);
             storyboard.Begin();
         }
@@ -229,6 +249,74 @@ namespace DesktopNotes
             CloseSettingPanel();
         }
 
+        private void btn_SaveNote_Click(object sender, RoutedEventArgs e)
+        {
+            using (var stream = new MemoryStream())
+            {
+                XamlWriter.Save(rbx_Content.Document, stream);
+                byte[] bytes = new byte[stream.Length];
+                stream.Position = 0;
+                stream.Read(bytes, 0, bytes.Length);
+
+                var data = DataContext as MainViewModel;
+                var dal = new Utils.DataBase.DAL.NotesDAL();
+
+                string note = Convert.ToBase64String(bytes);
+
+                if (string.IsNullOrWhiteSpace(data.NoteID))
+                {
+                    data.NoteID = dal.CreateNote(note);
+                    if (OnCreateNote != null)
+                    {
+                        OnCreateNote.Invoke(null, data.NoteID);
+                    }
+                }
+                else
+                {
+                    dal.UpdateNote(data.NoteID, note);
+                    if (OnUpdateNote != null)
+                    {
+                        OnUpdateNote.Invoke(null, data.NoteID);
+                    }
+                }
+            }
+        }
+
+        private void btn_NoteList_Click(object sender, RoutedEventArgs e)
+        {
+            Views.NoteList.Instance.Show();
+            CloseSettingPanel();
+        }
+
+        private void OnStorageModeChanged(object sender, EventArgs e)
+        {
+            var data = DataContext as MainViewModel;
+
+            if (data.ToolbarVisibility == Visibility.Hidden)
+            {
+                btnToolbarSwitch.IsEnabled = false;
+                var storyboard = new Storyboard();
+
+                ThicknessAnimation animation = new ThicknessAnimation()
+                {
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5)),
+                    DecelerationRatio = 0.9f
+                };
+
+                data.ToolbarVisibility = Visibility.Visible;
+                data.ToolbarSwitchIcon = "\ue7f3";
+
+                animation.From = new Thickness(Width, 0, 0, 0);
+                animation.To = new Thickness(0);
+
+                Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
+                Storyboard.SetTarget(animation, toolbarContainer);
+                storyboard.Completed += (obj, arge) => Dispatcher.Invoke(() => btnToolbarSwitch.IsEnabled = true);
+                storyboard.Children.Add(animation);
+                storyboard.Begin();
+            }
+        }
+
         private void CloseSettingPanel()
         {
             var storyboard = new Storyboard();
@@ -251,44 +339,6 @@ namespace DesktopNotes
             {
                 (DataContext as MainViewModel).SettingVisibility = Visibility.Hidden;
             }
-        }
-
-        private void btn_SaveNote_Click(object sender, RoutedEventArgs e)
-        {
-            using (var stream = new MemoryStream())
-            {
-                XamlWriter.Save(rbx_Content.Document, stream);
-                byte[] bytes = new byte[stream.Length];
-                stream.Position = 0;
-                stream.Read(bytes, 0, bytes.Length);
-
-                var data = DataContext as MainViewModel;
-                var dal = new Utils.DataBase.DAL.NotesDAL();
-
-                //var textRange = new TextRange(rbx_Content.Document.ContentStart, rbx_Content.Document.ContentEnd);
-                //string note = textRange.Text;
-
-                string note = Convert.ToBase64String(bytes);
-
-                if (string.IsNullOrWhiteSpace(data.NoteID))
-                {
-                    data.NoteID = dal.CreateNote(note);
-                }
-                else
-                {
-                    dal.UpdateNote(data.NoteID, note);
-                }
-            }
-
-            //var dal = new Utils.DataBase.DAL.NotesDAL();
-            //var res = dal.RetrieveNoteContent("eaf51676-4984-48a3-b126-3ea346ce8b91");
-            //AnalysisNoteFromDatabase(res.Content);
-        }
-
-        private void btn_NoteList_Click(object sender, RoutedEventArgs e)
-        {
-            var noteList = new Views.NoteList();
-            noteList.Show();
         }
     }
 }

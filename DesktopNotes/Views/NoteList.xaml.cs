@@ -20,11 +20,31 @@ namespace DesktopNotes.Views
     /// </summary>
     public partial class NoteList : Window
     {
-        public NoteList()
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        private NoteList()
         {
             InitializeComponent();
 
             DataContext = new NoteListViewModel();
+        }
+
+        /// <summary>
+        /// 单例对象
+        /// </summary>
+        public static NoteList Instance => Nested.instance;
+
+        /// <summary>
+        /// 防止调用此类静态方法时，创建新的实例
+        /// </summary>
+        private class Nested
+        {
+            internal static readonly NoteList instance = null;
+            static Nested()
+            {
+                instance = new NoteList();
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -40,20 +60,86 @@ namespace DesktopNotes.Views
             DragMove();
         }
 
-        private void btn_Close_Click(object sender, RoutedEventArgs e)
+        private void btn_MinSize_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            WindowState = WindowState.Minimized;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void btn_Close_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("111");
+            Hide();
+            //var data = DataContext as NoteListViewModel;
+            //MainViewModel.OnAddNewNote -= data.OnAddNewNote;
+            //MainViewModel.ChageItemTheme -= data.ChangeItemTheme;
         }
 
         private void menu_RemoveNote_Click(object sender, RoutedEventArgs e)
         {
             var test = sender as MenuItem;
-            MessageBox.Show(test.Tag.ToString());
+            var id = test.Tag.ToString();
+
+            var dataContext = DataContext as NoteListViewModel;
+            dataContext.Notes.Remove(dataContext.Notes.First(m => m.ID == id));
+
+            var dal = new Utils.DataBase.DAL.NotesDAL();
+            dal.DeleteNote(id);
+
+            var wins = Application.Current.Windows;
+
+            foreach (var item in wins)
+            {
+                if (item.GetType() == typeof(MainWindow))
+                {
+                    var data = ((MainWindow)item).DataContext as MainViewModel;
+
+                    if (data.NoteID == id)
+                    {
+                        ((MainWindow)item).Close();
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void lvItemBtn_Click(object sender, RoutedEventArgs e)
+        {
+            bool haveShowedForm = false;
+            var btnSource = (e.Source as Button).DataContext as ViewNote;
+
+            if (btnSource == null)
+            {
+                return;
+            }
+
+            var wins = Application.Current.Windows;
+
+            foreach (var item in wins)
+            {
+                if (item.GetType() == typeof(MainWindow))
+                {
+                    var data = ((MainWindow)item).DataContext as MainViewModel;
+
+                    if (data.NoteID == btnSource.ID)
+                    {
+                        ((MainWindow)item).Show();
+                        ((MainWindow)item).WindowState = WindowState.Normal;
+
+                        break;
+                    }
+                }
+            }
+
+            if (!haveShowedForm)
+            {
+                MainWindow form = new MainWindow(btnSource);
+                form.Show();
+            }
+        }
+
+        private void btn_NewForm_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow form = new MainWindow();
+            form.Show();
         }
     }
 }

@@ -12,6 +12,11 @@ namespace DesktopNotes.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
+        public static event EventHandler<string> OnAddNewNote;
+        public static event EventHandler<string> OnUpdateNote;
+        public static event EventHandler<Tuple<string, ThemeColor>> ChageItemTheme;
+        public event EventHandler OnStorageModeChanged;
+
         private bool _isBold;
         private bool _isItalic;
         private bool _isUnderLine;
@@ -114,6 +119,12 @@ namespace DesktopNotes.ViewModel
             set
             {
                 _selectedTheme = value;
+
+                if (ChageItemTheme != null)
+                {
+                    ChageItemTheme.Invoke(null, new Tuple<string, ThemeColor>(NoteID, value));
+                }
+
                 OnPropertyChanged(nameof(SelectedTheme));
             }
         }
@@ -145,6 +156,10 @@ namespace DesktopNotes.ViewModel
             {
                 _useLocalStorage = value;
                 CanSaveNote = value ? Visibility.Visible : Visibility.Hidden;
+                if (OnStorageModeChanged != null)
+                {
+                    OnStorageModeChanged.Invoke(null, null);
+                }
                 OnPropertyChanged(nameof(UseLocalStorage));
             }
         }
@@ -171,6 +186,21 @@ namespace DesktopNotes.ViewModel
 
         public MainViewModel()
         {
+            BasicCTOR();
+        }
+
+        public MainViewModel(ViewNote note)
+        {
+            BasicCTOR();
+
+            NoteID = note.ID;
+            SelectedTheme = note.Theme;
+            ThemeOptions[0].IsSelected = false;
+            ThemeOptions.First(m => m.Theme.Theme == note.Theme.Theme).IsSelected = true;
+        }
+
+        private void BasicCTOR()
+        {
             ToolbarSwitchIcon = "\ue7f4";
             ToolbarVisibility = Visibility.Hidden;
 
@@ -190,6 +220,22 @@ namespace DesktopNotes.ViewModel
 
             IsAlwaysTopMost = true;
             CanSaveNote = Visibility.Hidden;
+        }
+
+        public void CreateEvent(object sender, string id)
+        {
+            if (OnAddNewNote != null)
+            {
+                OnAddNewNote.Invoke(null, NoteID);
+            }
+        }
+
+        public void UpdateEvent(object sender, string id)
+        {
+            if (OnUpdateNote != null)
+            {
+                OnUpdateNote.Invoke(null, id);
+            }
         }
     }
 }
