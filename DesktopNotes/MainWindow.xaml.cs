@@ -25,6 +25,9 @@ namespace DesktopNotes
         public event EventHandler<string> OnUpdateNote;
         private bool isInitTheme = true;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -32,6 +35,10 @@ namespace DesktopNotes
             DataContext = new MainViewModel();
         }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="note"></param>
         public MainWindow(ViewNote note)
         {
             InitializeComponent();

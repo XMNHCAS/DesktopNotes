@@ -68,9 +68,6 @@ namespace DesktopNotes.Views
         private void btn_Close_Click(object sender, RoutedEventArgs e)
         {
             Hide();
-            //var data = DataContext as NoteListViewModel;
-            //MainViewModel.OnAddNewNote -= data.OnAddNewNote;
-            //MainViewModel.ChageItemTheme -= data.ChangeItemTheme;
         }
 
         private void menu_RemoveNote_Click(object sender, RoutedEventArgs e)
